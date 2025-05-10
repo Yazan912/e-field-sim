@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>E-Field Sim | Advanced Electric Field Visualizer</title>
+
+  <!-- Intro.js for tutorial mode -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
+
+  <!-- Tippy.js for tooltips -->
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css"/>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- TOP BAR pinned -->
+  <header id="topBar">
+    <h2>E-Field Sim system</h2>
+    <div class="topButtons">
+      <button
+        id="btnClear"
+        title="Remove all charges"
+        data-step="1"
+        data-intro="Click here to remove all charges from the canvas at once."
+        data-tippy-content="Remove all charges"
+      >Clear</button>
+
+      <button
+        id="btnSave"
+        title="Save charges to JSON"
+        data-step="2"
+        data-intro="Save your current set of charges as JSON text for later reloading."
+        data-tippy-content="Save charges as JSON"
+      >Save</button>
+
+      <button
+        id="btnLoad"
+        title="Load charges from JSON"
+        data-step="3"
+        data-intro="Paste previously saved JSON here and click Load to restore charges."
+        data-tippy-content="Load charges from JSON"
+      >Load</button>
+
+      <textarea
+        id="saveData"
+        rows="2" cols="25"
+        placeholder="JSON"
+        data-step="4"
+        data-intro="This area holds the JSON when you Save or want to Load a configuration."
+        data-tippy-content="JSON save/load area"
+      ></textarea>
+
+      <button
+        id="btnDarkMode"
+        title="Toggle Dark Mode"
+        data-step="5"
+        data-intro="Switch between Light and Dark themes for better visibility."
+        data-tippy-content="Toggle Dark Mode"
+      >🌙</button>
+
+      <button
+        id="btnUndo"
+        title="Undo (Ctrl+Z)"
+        data-step="6"
+        data-intro="Undo your last add/remove action on charges."
+        data-tippy-content="Undo last action"
+      >Undo</button>
+
+      <button
+        id="btnRedo"
+        title="Redo (Ctrl+Y)"
+        data-step="7"
+        data-intro="Redo an action you just undid."
+        data-tippy-content="Redo last action"
+      >Redo</button>
+
+      <button
+        id="btnStartRec"
+        title="Start Recording"
+        data-tippy-content="Start recording frames for GIF export"
+      >● Record</button>
+
+      <button
+        id="btnStopRec"
+        title="Stop & Download GIF"
+        data-tippy-content="Stop recording and download GIF"
+      >■ Stop</button>
+
+      <button
+        id="btnTutorial"
+        title="Show Tutorial"
+        data-step="8"
+        data-intro="Click here for a step-by-step walkthrough of all features."
+        data-tippy-content="Show guided tutorial"
+      >❔ Help</button>
+    </div>
+  </header>
+
+  <!-- LEFT PANEL pinned -->
+  <aside id="leftPanel">
+    <h3 data-tippy-content="Main simulation controls">Controls</h3>
+
+    <div class="checkboxGroup">
+      <label data-tippy-content="Toggle field streamlines">
+        <input type="checkbox" id="chkStreamlines" checked /> Streamlines
+      </label>
+      <label data-tippy-content="Toggle vector arrows">
+        <input type="checkbox" id="chkArrows" checked /> Arrows
+      </label>
+      <label data-tippy-content="Toggle potential heatmap">
+        <input type="checkbox" id="chkPotential" /> Heatmap
+      </label>
+      <label data-tippy-content="Color arrows by field strength">
+        <input type="checkbox" id="chkColorArrows" /> Color Arrows
+      </label>
+      <label data-tippy-content="Enable mouse probe for E, V, F">
+        <input type="checkbox" id="chkMouseProbe" /> Mouse Probe
+      </label>
+      <label data-tippy-content="Display system potential energy">
+        <input type="checkbox" id="chkSystemEnergy" /> System Energy
+      </label>
+    </div>
+
+    <div class="sliderGroup">
+      <label data-tippy-content="Adjust how many lines per µC">
+        Lines/1µC:
+        <input
+          type="range"
+          id="rngLines"
+          min="4" max="24" value="12"
+        />
+        <span id="lblLines">12</span>
+      </label>
+      <label data-tippy-content="Adjust spacing between arrows">
+        Arrow Spacing:
+        <input
+          type="range"
+          id="rngArrowSpace"
+          min="20" max="100" step="5" value="50"
+        />
+        <span id="lblArrowSpace">50</span>
+      </label>
+      <label data-tippy-content="Scale the length of arrows">
+        Arrow Scale (×10⁻⁶):
+        <input
+          type="range"
+          id="rngArrowScale"
+          min="1" max="100" value="30"
+        />
+        <span id="lblArrowScale">3e-5</span>
+      </label>
+      <label data-tippy-content="Lower resolution for faster heatmap updates">
+        Heatmap Resolution:
+        <input
+          type="range"
+          id="rngHeatRes"
+          min="0.25" max="1" step="0.25"
+          value="0.5"
+        />
+        <span id="lblHeatRes">0.5×</span>
+      </label>
+    </div>
+
+    <div class="chargeGroup">
+      <label data-tippy-content="Set magnitude for new charges">
+        Charge Magnitude (<span id="currentUnit">µC</span>):
+        <input
+          type="number"
+          id="inpChargeMag"
+          value="1"
+          step="0.1"
+          min="0.1"
+          style="width:60px;"
+        />
+      </label>
+      <div class="unitGroup">
+        <label data-tippy-content="Use microcoulombs">
+          <input type="radio" name="unitCharge" value="uC" checked /> µC
+        </label>
+        <label data-tippy-content="Use nanocoulombs">
+          <input type="radio" name="unitCharge" value="nC" /> nC
+        </label>
+      </div>
+      <p class="note">(Left-click = +charge, Right-click = -charge, Drag to move)</p>
+    </div>
+
+    <h3 data-tippy-content="Advanced features">Advanced</h3>
+    <button
+      id="btnPlaceDipole"
+      title="Place +q and -q near canvas center"
+      data-tippy-content="Place a positive-negative dipole at the center"
+    >Place Dipole</button>
+    <br><br>
+
+    <label
+      title="Draw polygon for flux"
+      data-tippy-content="Enable polygon-drawing mode to compute flux"
+    >
+      <input type="checkbox" id="chkFluxMode" /> Flux Mode (auto-updated)
+    </label>
+    <p class="note">SHIFT+Click = close polygon</p>
+    <div id="fluxTip" style="display:none; margin-top:10px;"
+         data-tippy-content="Click points to create a shape, SHIFT+Click to close">
+      ➡️ Tip: Click points to create a shape, SHIFT+Click to close it!
+    </div>
+
+    <br>
+
+    <label data-tippy-content="Run/pause charge motion simulation">
+      <input type="checkbox" id="chkMoving" /> Run Simulation (Moving Charges)
+    </label>
+    <p class="note">Using RK4 integrator</p>
+    <br>
+
+    <h4 data-tippy-content="Time-varying E-field settings">Time-Varying Field</h4>
+    <label data-tippy-content="External field amplitude in N/C">
+      Amplitude (N/C):
+      <input type="number" id="inpFieldAmp" value="500" step="50" />
+    </label>
+    <label data-tippy-content="External field frequency in Hz">
+      Frequency (Hz):
+      <input type="number" id="inpFieldFreq" value="1" step="0.5" />
+    </label>
+    <label data-tippy-content="Enable sinusoidal external field">
+      <input type="checkbox" id="chkTimeField" /> Enable Time Field
+    </label>
+    <p class="note">Adds E_ext(t) = Amp × sin(2π×freq×t) in +x direction</p>
+
+    <h4 data-tippy-content="Uniform magnetic field settings">Magnetic Field</h4>
+    <label data-tippy-content="Set the magnetic field strength in µT">
+      B Strength (µT):
+      <input type="number" id="inpFieldB" value="0" step="10" style="width:80px;" />
+    </label>
+    <br>
+    <label data-tippy-content="Enable magnetic Lorentz force">
+      <input type="checkbox" id="chkMagField" /> Enable Magnetic Field
+    </label>
+    <p class="note">Lorentz force F = q·(v×B), B ⟂ plane</p>
+  </aside>
+
+  <!-- RIGHT PANEL pinned -->
+  <aside id="rightPanel">
+    <h3 data-tippy-content="Live computed values">Live Calculations</h3>
+    <div class="calcLine" id="calcMouse"></div>
+    <div class="calcLine" id="calcE"></div>
+    <div class="calcLine" id="calcV"></div>
+    <div class="calcLine" id="calcF"></div>
+    <div class="calcLine" id="calcEnergy"></div>
+    <div class="calcLine" id="dipoleInfo"></div>
+    <div class="calcLine" id="fluxInfo"></div>
+
+    <button
+      id="btnShowGraphs"
+      data-tippy-content="Display time-series charts for flux & energy"
+    >Show Graphs</button>
+    <button
+      id="btnExportCSV"
+      data-tippy-content="Download simulation data as CSV"
+    >Export Data</button>
+
+    <!-- Graph Modal -->
+    <div
+      id="graphModal"
+      style="display:none; position:fixed; top:5%; left:5%; width:90%; height:90%;
+             background: var(--panel-bg); border:2px solid var(--accent);
+             z-index:2001; padding:1rem; overflow:auto;"
+    >
+      <h3>Simulation Data</h3>
+      <canvas id="chartFlux" style="width:100%; height:200px;"></canvas>
+      <canvas id="chartEnergy" style="width:100%; height:200px; margin-top:1rem;"></canvas>
+      <button id="btnCloseGraphs" style="margin-top:1rem;" data-tippy-content="Close graphs">Close</button>
+    </div>
+
+    <!-- Color Legend -->
+    <div id="legend" data-tippy-content="Color scale legend for field strength">
+      <h4>Legend</h4>
+      <div class="legend-row">
+        <span class="legend-swatch" style="background: rgb(0,255,255)"></span>
+        <span>Low field strength</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-swatch" style="background: rgb(255,255,0)"></span>
+        <span>Medium field strength</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-swatch" style="background: rgb(255,0,0)"></span>
+        <span>High field strength</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main id="mainArea">
+    <canvas id="fieldCanvas"></canvas>
+  </main>
+
+  <!-- Congratulations Modal -->
+  <div
+    id="congratsModal"
+    style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+           background:var(--modal-bg); border:2px solid var(--modal-border);
+           padding:20px 30px; text-align:center; z-index:2000; border-radius:10px;"
+    data-tippy-content="Flux polygon completed!"
+  >
+    <h2 style="color:var(--modal-border);">🎉 Congratulations! 🎉</h2>
+    <p>You have successfully closed the Flux Polygon!</p>
+    <button
+      onclick="document.getElementById('congratsModal').style.display='none'"
+      style="margin-top:15px;padding:5px 15px;"
+      data-tippy-content="Close this message"
+    >Close</button>
+  </div>
+
+  <footer>
+    <p>© 2025 YAZAN - Advanced</p>
+  </footer>
+
+  <!-- Chart.js for plotting -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- CCapture.js for GIF export -->
+  <script src="https://cdn.jsdelivr.net/npm/ccapture.js@1.1.0/build/CCapture.all.min.js"></script>
+  <!-- Your main logic -->
+  <script src="logic.js"></script>
+
+</body>
+</html>

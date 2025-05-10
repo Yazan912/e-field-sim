@@ -1,0 +1,289 @@
+/*=============================================
+= 1. VARIABLES
+=============================================*/
+
+/* Light mode variables */
+:root {
+  --bg-page:        #f5f5f5;
+  --text-primary:   #333;
+  --panel-bg:       #fff;
+  --panel-border:   #ccc;
+  --accent:         #0069d9;
+  --btn-bg:         #0069d9;
+  --btn-hover:      #0051b3;
+  --modal-border:   #0069d9;
+  --modal-bg:       #fff;
+  --modal-text:     #333;
+  --canvas-border:  #ccc;
+}
+
+/* Dark mode overrides */
+body.dark-mode {
+  --bg-page:        #121212;
+  --text-primary:   #e0e0e0;
+  --panel-bg:       #1e1e1e;
+  --panel-border:   #444;
+  --accent:         #3399ff;
+  --btn-bg:         #3399ff;
+  --btn-hover:      #217abb;
+  --modal-border:   #3399ff;
+  --modal-bg:       #2a2a2a;
+  --modal-text:     #e0e0e0;
+  --canvas-border:  #444;
+}
+
+/*=============================================
+= 2. RESET & BASE
+=============================================*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  overflow-y: auto; /* allow normal scrolling */
+}
+
+/*=============================================
+= 3. TOP BAR
+=============================================*/
+#topBar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#topBar h2 {
+  margin: 0.2rem 0;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.topButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.topButtons button {
+  font-size: 1.1rem;
+  padding: 0.4rem 1rem;
+  background: var(--btn-bg);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.topButtons button:hover {
+  background: var(--btn-hover);
+}
+
+#saveData {
+  resize: none;
+  font-family: monospace;
+  height: 2.4rem;
+}
+
+/*=============================================
+= 4. LEFT PANEL
+=============================================*/
+#leftPanel {
+  position: fixed;
+  top: 90px; left: 0; bottom: 0;
+  width: 270px;
+  background: var(--panel-bg);
+  border-right: 2px solid var(--panel-border);
+  padding: 1rem;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+#leftPanel h3 {
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.sliderGroup label,
+.checkboxGroup label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.note {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-top: 0.5rem;
+}
+
+/* Flux Tip */
+#fluxTip {
+  margin-top: 10px;
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 1rem;
+  display: none;
+}
+
+/*=============================================
+= 5. RIGHT PANEL
+=============================================*/
+#rightPanel {
+  position: fixed;
+  top: 90px; right: 0; bottom: 0;
+  width: 240px;
+  background: var(--panel-bg);
+  border-left: 2px solid var(--panel-border);
+  padding: 1rem;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+#rightPanel h3 {
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.calcLine {
+  font-size: 1.05rem;
+  line-height: 1.4;
+  margin-bottom: 0.7rem;
+  color: var(--text-primary);
+}
+
+/*=============================================
+= 6. MAIN AREA
+=============================================*/
+#mainArea {
+  margin-top: 90px;
+  margin-left: 270px;
+  margin-right: 240px;
+  padding: 1rem;
+  min-height: 800px;
+  background: var(--panel-bg);
+  text-align: center;
+}
+
+/*=============================================
+= 7. CANVAS
+=============================================*/
+#fieldCanvas {
+  width: 100%;
+  height: 600px; 
+  border: 1px solid var(--canvas-border);
+  display: block;
+  margin: 0 auto;
+  cursor: crosshair;
+}
+
+/*=============================================
+= 8. FOOTER
+=============================================*/
+footer {
+  text-align: center;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  padding: 1rem;
+}
+
+/*=============================================
+= 9. CONGRATS MODAL
+=============================================*/
+#congratsModal {
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--modal-bg);
+  border: 2px solid var(--modal-border);
+  padding: 20px 30px;
+  text-align: center;
+  z-index: 2000;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+#congratsModal h2 {
+  margin-bottom: 10px;
+  color: var(--modal-border);
+}
+
+#congratsModal p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: var(--modal-text);
+}
+
+#congratsModal button {
+  background: var(--btn-bg);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+#congratsModal button:hover {
+  background: var(--btn-hover);
+}
+.unitGroup {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+.unitGroup label {
+  margin-right: 1rem;
+  cursor: pointer;
+}
+.unitGroup input {
+  margin-right: 0.25rem;
+}
+#legend {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+.legend-swatch {
+  width: 16px; height: 16px;
+  border: 1px solid #666;
+  margin-right: 0.5rem;
+}
+@media (max-width: 800px) {
+  #leftPanel, #rightPanel {
+    position: static;
+    width: auto;
+    height: auto;
+    border: none;
+    padding: 0.5rem;
+  }
+  #mainArea {
+    margin: 1rem;
+  }
+}
