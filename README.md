@@ -42,7 +42,7 @@ as long as you **credit the author** and **license your work under the same term
 If you are a company or organization interested in using this project **commercially**  
 or licensing it under different terms, please contact the author to discuss a separate license agreement.
 
-📧 Contact: yazan.obeidat.dev@gmail.com
+📧 Contact: yazanbusiness65@gmail.com
 
 ---
 
