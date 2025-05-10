@@ -1,3 +1,6 @@
+// © 2025 Yazan Obeidat
+// This code is licensed under CC BY-NC-SA 4.0.
+// Commercial use is strictly prohibited without a separate license.
 /******************************************************
  * GLOBALS & CANVAS
  ******************************************************/
