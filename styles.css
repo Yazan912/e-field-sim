@@ -276,14 +276,41 @@ footer {
   margin-right: 0.5rem;
 }
 @media (max-width: 800px) {
-  #leftPanel, #rightPanel {
+  /* Panels go static */
+  #leftPanel,
+  #rightPanel {
     position: static;
     width: auto;
     height: auto;
     border: none;
     padding: 0.5rem;
   }
+
+  /* Main area margin */
   #mainArea {
     margin: 1rem;
+  }
+
+  /* Wrap toolbar buttons on narrow screens */
+  .topButtons {
+    display: flex;           /* already flex, ensure it */
+    flex-wrap: wrap;         /* allow items to flow to new lines */
+    gap: 0.5rem;             /* smaller gaps for mobile */
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  /* Let the JSON textarea fill the row */
+  #saveData {
+    flex: 1 1 100%;
+    margin: 0.5rem 0;
+    max-width: 100%;
+  }
+
+  /* Optional: ensure buttons don’t shrink too small */
+  #topBar > .topButtons button,
+  #topBar > .topButtons textarea {
+    flex: 1 1 auto;
+    min-width: 4rem;
   }
 }
